@@ -56,7 +56,10 @@ func getPlayers(w http.ResponseWriter, r *http.Request) {
 }
 
 // Returns games played
-func getGames(w http.ResponseWriter, r *http.Request) {}
+func getGames(w http.ResponseWriter, r *http.Request) {
+	logrus.Info("Getting all games...")
+	json.NewEncoder(w).Encode(dao.GetGames(dbHandler))
+}
 
 func main() {
 

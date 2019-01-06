@@ -55,7 +55,7 @@ func retrievePlayers(dbHandler *sql.DB, query string, args ...interface{}) []Pla
 
 	// Convert rows to Player type
 	for rows.Next() {
-		user, err := convertRow(rows)
+		user, err := convertPlayerRow(rows)
 		if err != nil {
 			logrus.Warn("Cannot convert player record", err)
 		} else {
@@ -65,7 +65,7 @@ func retrievePlayers(dbHandler *sql.DB, query string, args ...interface{}) []Pla
 	return userArray
 }
 
-func convertRow(row *sql.Rows) (Player, error) {
+func convertPlayerRow(row *sql.Rows) (Player, error) {
 	var id int64
 	var firstName string
 	var lastName string
