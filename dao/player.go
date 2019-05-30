@@ -27,18 +27,29 @@ const (
 )
 
 func GetPlayer(dbHandler *sql.DB, id string) []Player {
-	return retrievePlayers(dbHandler, getPlayerQuery, id)
+	players, err := retrievePlayers(dbHandler, getPlayerQuery, id)
+	if err != nil {
+		logrus.Errorf("Cannot retrieve player (id:%s)", id, err)
+		return []Player{}
+	}
+	return players
 }
 
 func GetPlayers(dbHandler *sql.DB) []Player {
-	return retrievePlayers(dbHandler, getPlayersQuery)
+	players, err := retrievePlayers(dbHandler, getPlayersQuery)
+	if err != nil {
+		logrus.Errorf("Cannot retrieve players", err)
+		return []Player{}
+	}
+	return players
 }
 
-func retrievePlayers(dbHandler *sql.DB, query string, args ...interface{}) []Player {
+func retrievePlayers(dbHandler *sql.DB, query string, args ...interface{}) ([]Player, error) {
 	var userArray []Player
 	err := dbHandler.Ping()
 	if err != nil {
 		logrus.Errorf("Unable to invoke query: %s!", query, err)
+		return nil, err
 	}
 
 	var rows *sql.Rows
@@ -49,7 +60,7 @@ func retrievePlayers(dbHandler *sql.DB, query string, args ...interface{}) []Pla
 	}
 	if err != nil {
 		logrus.Errorf("Unable to invoke query: %s!", query, err)
-		return userArray
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -62,7 +73,7 @@ func retrievePlayers(dbHandler *sql.DB, query string, args ...interface{}) []Pla
 			userArray = append(userArray, user)
 		}
 	}
-	return userArray
+	return userArray, nil
 }
 
 func convertPlayerRow(row *sql.Rows) (Player, error) {

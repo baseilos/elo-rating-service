@@ -42,7 +42,7 @@ func getPlayers(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	if playerId, ok := vars["id"]; ok {
 		//do something here
-		logrus.Infof("Getting user with id %s ...", playerId)
+		logrus.Infof("Getting player with id %s ...", playerId)
 		foundPlayers := dao.GetPlayer(dbHandler, playerId)
 		if len(foundPlayers) == 0 {
 			w.WriteHeader(http.StatusNoContent)
